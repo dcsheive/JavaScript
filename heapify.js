@@ -5,13 +5,11 @@ function heapify(arr){
     var childIndex = arr.length-2;
     var childIndex_2 = arr.length-1;
     var countIndex = currentIndex;
-    console.log(arr)
     while (countIndex>0){
         currentIndex = countIndex;
         childIndex = Math.trunc(currentIndex*2);
         childIndex_2 = childIndex + 1;
         while(arr[currentIndex]>arr[childIndex] || arr[currentIndex]>arr[childIndex_2]){
-            console.log('run')
             if (arr[childIndex]<arr[childIndex_2] || !arr[childIndex_2]){
                 let temp = arr[childIndex];
                 arr[childIndex] = arr[currentIndex];

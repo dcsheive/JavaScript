@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Trivia</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
         function shuffle(a) {
@@ -18,41 +19,70 @@
             return a;
         }
         $(document).ready(function(){
+            var points = 0;
+            $('#content').on('click', '.question', function(){
+                $(this).children('p').slideDown();
+                $(this).children('form').slideDown();
+                $(this).children('h2').hide();
+                $(this).css('height','unset');
+            })
             $('#content').on('click','input', function(){
                 if($(this).attr('class')== 'correct') {
+                    points +=100;
+                    $('#header h2').html(points+' points')
                     $(this).parent().parent().css('background-color','green');
                 }
                 else{
+                    points -=100;
+                    $('#header h2').html(points+' points')
                     $(this).parent().parent().css('background-color','red');
                 }
             })
-            var get = $.get("https://opentdb.com/api.php?amount=10&difficulty=easy&type=multiple", function(data) {
+            var get = $.get("https://opentdb.com/api.php?amount=50&difficulty=easy&type=multiple", function(data) {
                 console.log(data);
-                var questions = '';
+                let questions = '', catList = [], questionsArr = [];
                 for(let i = 0;i<data.results.length;i++){
-                    questions += '<div class="sub">';
-                    questions += '<div class="category">';
-                    questions += '<p>'+data.results[i].category+'</p>';
-                    questions += '</div>';
-                    questions += '<div class="question">';
-                    questions += '<p>'+data.results[i].question+'</p>';
-                    questions += '<form>';
-                    questionsArr = data.results[i].incorrect_answers;
-                    questionsArr[3] = data.results[i].correct_answer;
-                    questionsArr = shuffle(questionsArr);
-                    for(let j = 0; j<questionsArr.length; j++){
-                        
-                        if (data.results[i].correct_answer==questionsArr[j]){
-                            questions+= '<input type="radio" class="correct">'+questionsArr[j]+'<br>'
-                        }
-                        else{
-                            questions+= '<input type="radio">'+questionsArr[j]+'<br>'
-                        }
+                    if(catList.indexOf(data.results[i].category)== -1){
+                        catList.push(data.results[i].category);
+                        questions += '<div class="sub" id="'+data.results[i].category+'">';
+                        questions += '<div class="category">';
+                        questions += '<p>'+data.results[i].category+'</p>';
+                        questions += '</div>';
+                        questions += '</div>';
                     }
-                    questions += '</form></div>';
-                    questions += '</div>';
+                    if(catList.length>4){
+                        break;
+                    }
                 }
                 $('#content').html(questions);
+                for(let i = 0; i<data.results.length; i++){
+                    box = $('.sub').filter(function(){return this.id==data.results[i].category})
+                    if (box.attr('id') == data.results[i].category){
+                        questions = '';
+                        questions += '<div class="question">';
+                        questions += '<h2>100</h2>';
+                        questions += '<p>'+data.results[i].question+'</p>';
+                        questions += '<form>';
+                        questionsArr = data.results[i].incorrect_answers;
+                        questionsArr[3] = data.results[i].correct_answer;
+                        questionsArr = shuffle(questionsArr);
+                        for(let j = 0; j<questionsArr.length; j++){
+                            
+                            if (data.results[i].correct_answer==questionsArr[j]){
+                                questions+= '<input type="radio" class="correct">'+questionsArr[j]+'<br>'
+                            }
+                            else{
+                                questions+= '<input type="radio">'+questionsArr[j]+'<br>'
+                            }
+                        }
+                        questions += '</form></div>';
+                        if (box.children().length<5){
+                            box.append(questions);
+                        }
+                    }
+                }
+                
+
             })
         });
     </script>
@@ -65,11 +95,13 @@
             justify-content: space-between;
         }
         a {
-            margin-top: 40px;
+            margin-top: 20px;
         }
         #content{
             display: flex;
             flex-direction: row;
+            width: 96vw;
+            margin-top: 20px;
         }
         .sub{
             margin: 20px;
@@ -80,17 +112,22 @@
         }
         .category {
             background-color: rgb(206, 206, 110);
-            margin: 10px;
             border-radius: 10px;
+            height:70px;
+            padding: 10px;
         }
         .question {
-            height: 200px;
             width: 200px;
+            height: 200px;
             border: 2px solid black;
             border-radius: 10px;
             background-color: blue;
             margin: 10px auto;
             color: white;
+            padding: 10px;
+        }
+        .question p, .question form {
+            display: none;
         }
         
     </style>
@@ -100,7 +137,7 @@
         <div id="header">
             <a href="">Continue with new questions</a>
             <h1>Trivia Night</h1>
-            <h1>0 points</h1>
+            <h2>0 points</h2>
         </div>
         <div id="content">
 
