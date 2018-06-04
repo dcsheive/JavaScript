@@ -28,10 +28,7 @@
             })
             var get = $.get("https://opentdb.com/api.php?amount=10&difficulty=easy&type=multiple", function(data) {
                 console.log(data);
-                var questions = '', catList = [];
-                for (let i = 0; i<data.results;i++){
-                    
-                }
+                var questions = '';
                 for(let i = 0;i<data.results.length;i++){
                     questions += '<div class="sub">';
                     questions += '<div class="category">';
