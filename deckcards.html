@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <script>
+        class Card {
+            constructor(value,suit,face){
+                this.value = value;
+                this.suit = suit;
+                this.face = face;
+            }
+        }
+        class Deck {
+            constructor(){
+                this.cards = []
+                var faces = ['Ace','2','3','4','5','6','7','8','9','10','Jack','Queen','King']
+                var suits = ['Spades','Diamonds','Clubs','Hearts']
+                for (let i = 0; i<suits.length;i++){
+                    for (let j = 0; j<faces.length;j++){
+                        if (j == 0 ){
+                            this.cards.push(new Card(1||11,suits[i],faces[j]))
+                        }
+                        else if (j > 9){
+                            this.cards.push(new Card(j+1,suits[i],faces[j]))
+                        }   
+                        else{
+                            this.cards.push(new Card(10,suits[i],faces[j]))
+                        }
+                    }
+                }
+            }
+            shuffle(){
+                var j, temp;
+                for (var i = this.cards.length - 1; i > 0; i--) {
+                    j = Math.floor(Math.random() * (i + 1));
+                    temp = this.cards[i];
+                    this.cards[i] = this.cards[j];
+                    this.cards[j] = temp;
+                }
+                return this.cards;
+            }
+            reset(){
+                this.cards = []
+                var faces = ['Ace','2','3','4','5','6','7','8','9','10','Jack','Queen','King']
+                var suits = ['Spades','Diamonds','Clubs','Hearts']
+                for (let i = 0; i<suits.length;i++){
+                    for (let j = 0; j<faces.length;j++){
+                        if (j == 0 ){
+                            this.cards.push(new Card(1||11,suits[i],faces[j]))
+                        }
+                        else if (j > 9){
+                            this.cards.push(new Card(j+1,suits[i],faces[j]))
+                        }   
+                        else{
+                            this.cards.push(new Card(10,suits[i],faces[j]))
+                        }
+                    }
+                }
+            }
+            deal(){
+                return this.cards.pop();
+            }
+            show(){
+                for(let i =0; i<this.cards.length;i++){
+                    console.log(this.cards[i].face,"of",this.cards[i].suit)
+                }
+            }
+        }
+        class Player {
+            constructor(name, hand){
+                this.name = name;
+                this.hand = null;
+            }
+            takeCard(deck) {
+                this.hand = deck.deal();
+            }
+            discard(){
+                this.hand = null;
+            }
+            
+        }
+        mydeck = new Deck;
+        player1 = new Player;
+        $(document).ready(function(){
+
+        });
+    </script>
+</head>
+<body>
+    
+</body>
+</html>

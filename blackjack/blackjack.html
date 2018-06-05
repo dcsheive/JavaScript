@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <script>
+        class Card {
+            constructor(value,suit,face,img){
+                this.value = value;
+                this.suit = suit;
+                this.face = face;
+                this.img = img;
+            }
+        }
+        class Deck {
+            constructor(){
+                this.cards = []
+                var faces = ['Ace','2','3','4','5','6','7','8','9','10','Jack','Queen','King']
+                var suits = ['Spades','Diamonds','Clubs','Hearts']
+                var imgs = ['s','d','c','h']
+                var imgf = ['1','2','3','4','5','6','7','8','9','10','j','q','k']
+                for (let i = 0; i<suits.length;i++){
+                    for (let j = 0; j<faces.length;j++){
+
+                        if (j == 0 ){
+                            this.cards.push(new Card(1||11,suits[i],faces[j],(imgs[i]+imgf[j])))
+                        }
+                        else if (j > 9){
+                            this.cards.push(new Card(10,suits[i],faces[j],(imgs[i]+imgf[j])))
+                        }   
+                        else{
+                            this.cards.push(new Card(j+1,suits[i],faces[j],(imgs[i]+imgf[j])))
+                        }
+                    }
+                }
+            }
+            shuffle(){
+                var j, temp;
+                for (var i = this.cards.length - 1; i > 0; i--) {
+                    j = Math.floor(Math.random() * (i + 1));
+                    temp = this.cards[i];
+                    this.cards[i] = this.cards[j];
+                    this.cards[j] = temp;
+                }
+                return this.cards;
+            }
+            deal(){
+                return this.cards.pop();
+            }
+            show(){
+                for(let i =0; i<this.cards.length;i++){
+                    console.log(this.cards[i].face,"of",this.cards[i].suit)
+                }
+            }
+        }
+        class Player {
+            constructor(name, hand){
+                this.name = name;
+                this.hand = [];
+                this.money = 100;
+                this.bet = 0;
+                this.win = null;
+            }
+            takeCard(deck) {
+                this.hand.push(deck.deal());
+            }
+            discard(){
+                this.hand = null;
+            }
+            checkCards(){
+                var sum = 0
+                for(let i = 0; i<this.hand.length;i++){
+                    sum+= this.hand[i].value
+                }
+                return sum;
+            }
+            play(dealer){
+                playerscore = this.checkCards()
+                dealerscore = dealer.checkCards()
+                if(dealerscore==21){
+                    this.win = false;
+                }
+                else if(playerscore==21){
+                    this.win = true;
+                }
+                else if (playerscore >21){
+                    this.win = false;
+                }
+                else if (dealerscore >21 && playerscore <=21){
+                    this.win = true;
+                }
+                else if (playerscore>dealerscore){
+                    this.win = true;
+                }
+                else {
+                    this.win = false;
+                }
+
+            }
+
+            
+        }
+        deck = new Deck;
+        player = new Player;
+        dealer = new Player;
+        $(document).ready( function(){
+            $('#deal').click(function(){
+                if (player.hand.length>1 && player.checkCards()<21 || player.win != null){
+                    return null;
+                }
+                deck.shuffle();
+                player.hand = []
+                dealer.hand = []
+                player.takeCard(deck);
+                player.takeCard(deck);
+                dealer.takeCard(deck);
+                dealer.takeCard(deck);
+                playercards = '<img src="'+player.hand[0].img+'.png">'+'<img src="'+player.hand[1].img+'.png">'
+                dealercards = '<img src="'+dealer.hand[0].img+'.png">'+'<img src="b2fv.png" id="secret">'
+                $('#dealer').html(dealercards)                
+                $('#player').html(playercards)
+                $('h3:last').html(player.checkCards())
+                $('h3:first').html("") 
+            })
+            $('#hit').click(function(){
+                if(player.hand.length<2)
+                    return null;
+                if (player.checkCards()>21)
+                    return null;
+                player.takeCard(deck);
+                playercards = ""
+                for(i in player.hand){
+                    playercards += '<img src="'+player.hand[i].img+'.png">'
+                }
+                $('#player').html(playercards)
+                $('h3:last').html(player.checkCards())
+                if (player.checkCards()>21){
+                    while(dealer.checkCards()<17){
+                        dealer.takeCard(deck)
+                        dealercards = ""
+                        for(i in dealer.hand){
+                            dealercards += '<img src="'+dealer.hand[i].img+'.png">'
+                        }
+                        $('#dealer').html(dealercards) 
+                        $('h3:first').html(dealer.checkCards()) 
+                    }
+                    player.play(dealer);
+                }
+            })
+            $('#stay').click(function (){
+                if(player.hand.length<2)
+                    return null;
+                if(dealer.checkCards()>21)
+                    return null;
+                while(dealer.checkCards()<17){
+                    dealer.takeCard(deck)
+                    dealercards = ""
+                    for(i in dealer.hand){
+                        dealercards += '<img src="'+dealer.hand[i].img+'.png">'
+                    }
+                    $('#dealer').html(dealercards) 
+                    $('h3:first').html(dealer.checkCards()) 
+                }
+                player.play(dealer); 
+            })
+        })
+    </script>
+    <style>
+        #container{
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+        }
+        #table{
+            height: 80%;
+            width: 75%;
+            background-color: green;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .place{
+            width: 100%;
+            height: 20%;
+            background-color: red;
+            display: flex;
+            justify-content: space-between;
+        }
+        .space:nth-of-type(2){
+            display:flex;
+            justify-content: space-around;
+        }
+        .space {
+            width: 33.33%;
+            height: 100%;
+        }
+        #deal{
+            height:80%;
+        }
+        h2{
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="table">
+            <div class="place">
+                <div class="space">
+                    <h2>Bet: $0</h2>
+                </div>
+                <div class="space" id="dealer">
+                    
+                </div>
+                <div class="space">
+                    <h2>$100 dollars</h2>
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <h3></h3>
+                <h1>Dealer plays to 17</h1>
+                <h3></h3>
+            </div>
+            <div class="place">
+                <div class="space">
+                    <input type="text">
+                    <button id="bet">Place Bet</button>
+                </div>
+                <div class="space" id="player">
+
+                </div>
+                <div class="space">
+                    <button id="hit">Hit</button>
+                    <button id="stay">Stay</button>
+                </div>
+            </div>
+        </div>
+        <button id="deal">Deal</button>
+    </div>
+</body>
+</html>
