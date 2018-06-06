@@ -58,6 +58,8 @@
                 this.name = name;
                 this.hand = [];
                 this.win = '';
+                this.wins = 0;
+                this.lose = 0;
             }
             takeCard(deck) {
                 this.hand.push(deck.deal());
@@ -142,15 +144,22 @@
                 else {
                     this.win ='lose';
                 }
+                if (this.win=='lose'){
+                    this.lose += 1
+                }
+                else {
+                    this.wins += 1
+                }
 
             }
-
-            
         }
         deck = new Deck;
         player = new Player;
         dealer = new Player;
         $(document).ready( function(){
+            function drawscore(){
+                $('#score').html('Wins: '+player.wins+" Lose: "+player.lose)
+            }
             function drawdealer(){
                 dealercards = ""
                 for(i in dealer.hand){
@@ -160,6 +169,7 @@
                 $('h3:first').html(dealer.checkCards())
                 player.play(dealer)
                 $('#tabletext').html('You '+player.win+'!')
+                drawscore();
             }
             $('#deal').click(function(){
                 if (player.hand.length>1&&player.win==""){
@@ -280,8 +290,6 @@
         #buttons{
             display: flex;
         }
-        
-
     </style>
 </head>
 <body>
@@ -295,6 +303,7 @@
                     
                 </div>
                 <div class="space">
+                    <h3 id="score"></h3>
                 </div>
             </div>
             <div style="text-align: center;">
