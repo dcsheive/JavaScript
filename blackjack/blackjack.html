@@ -116,6 +116,16 @@
         player = new Player;
         dealer = new Player;
         $(document).ready( function(){
+            function drawdealer(){
+                dealercards = ""
+                for(i in dealer.hand){
+                    dealercards += '<img src="'+dealer.hand[i].img+'.png">'
+                }
+                $('#dealer').html(dealercards) 
+                $('h3:first').html(dealer.checkCards())
+                player.play(dealer)
+                $('#tabletext').html('You '+player.win+'!')
+            }
             $('#deal').click(function(){
                 if (player.hand.length>1&&player.win==""){
                     return null;
@@ -132,14 +142,7 @@
                 $('h3:last').html(player.checkCards())
                 $('h3:first').html("") 
                 if (dealer.checkCards()==21){
-                    dealercards = ""
-                    for(i in dealer.hand){
-                        dealercards += '<img src="'+dealer.hand[i].img+'.png">'
-                    }
-                    $('#dealer').html(dealercards) 
-                    $('h3:first').html(dealer.checkCards())
-                    player.play(dealer)
-                    $('#tabletext').html('You '+player.win+'!') 
+                     drawdealer();
                 }
             })
             $('#hit').click(function(){
@@ -155,14 +158,7 @@
                 $('h3:last').html(player.checkCards())
                 if (player.checkCards()>=21){
                     dealer.dealerPlay(deck);
-                    dealercards = ""
-                    for(i in dealer.hand){
-                        dealercards += '<img src="'+dealer.hand[i].img+'.png">'
-                    }
-                    $('#dealer').html(dealercards) 
-                    $('h3:first').html(dealer.checkCards())
-                    player.play(dealer);
-                    $('#tabletext').html('You '+player.win+'!') 
+                    drawdealer()
                 }
             })
             $('#stay').click(function (){
@@ -176,14 +172,7 @@
                 $('#dealer').html(dealercards) 
                 $('h3:first').html(dealer.checkCards()) 
                 dealer.dealerPlay(deck);
-                dealercards = ""
-                for(i in dealer.hand){
-                    dealercards += '<img src="'+dealer.hand[i].img+'.png">'
-                }
-                $('#dealer').html(dealercards) 
-                $('h3:first').html(dealer.checkCards()) 
-                player.play(dealer);
-                $('#tabletext').html('You '+player.win+'!') 
+                drawdealer()
             })
         })
     </script>
