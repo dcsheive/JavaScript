@@ -25,11 +25,7 @@
                 var imgf = ['1','2','3','4','5','6','7','8','9','10','j','q','k']
                 for (let i = 0; i<suits.length;i++){
                     for (let j = 0; j<faces.length;j++){
-
-                        if (j == 0 ){
-                            this.cards.push(new Card(1||11,suits[i],faces[j],(imgs[i]+imgf[j])))
-                        }
-                        else if (j > 9){
+                        if (j > 9){
                             this.cards.push(new Card(10,suits[i],faces[j],(imgs[i]+imgf[j])))
                         }   
                         else{
@@ -67,9 +63,20 @@
                 this.hand.push(deck.deal());
             }
             checkCards(){
-                var sum = 0
+                var sum = 0;
+                var isAce = false;
                 for(let i = 0; i<this.hand.length;i++){
-                    sum+= this.hand[i].value
+                    if (this.hand[i].face == 'Ace'){
+                        isAce = true;
+                        sum+= this.hand[i].value
+                        continue
+                    }
+                    else{
+                        sum+= this.hand[i].value
+                    }
+                }
+                if (sum<22 && sum+10<22 && isAce){
+                    sum +=10;
                 }
                 return sum;
             }
@@ -142,7 +149,10 @@
                 $('h3:last').html(player.checkCards())
                 $('h3:first').html("") 
                 if (dealer.checkCards()==21){
-                     drawdealer();
+                    drawdealer();
+                }
+                else if (player.checkCards()==21){
+                    drawdealer();
                 }
             })
             $('#hit').click(function(){
@@ -191,6 +201,9 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            border: 2px solid black;
+            box-shadow: 4px 4px 10px rgb(94, 94, 94);
+            border-radius: 15px;
         }
         .place{
             width: 100%;
@@ -199,12 +212,24 @@
             display: flex;
             justify-content: space-between;
         }
+        .place:first-of-type{
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+        .place:last-of-type{
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+        }
         .space:nth-of-type(2){
             display:flex;
             justify-content: space-around;
         }
+        .place:first{
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
         .space {
-            width: 33.33%;
+            width: 33%;
             height: 100%;
         }
         h2{
@@ -215,14 +240,19 @@
             text-align: right;
         }
         button {
-            margin-top: 20px;
-            margin-bottom: 20px;
+            width: 33.33%;
+            height: 100%;
+            background-color: gray;
+            font-size: 22px;
+            border: 1px solid rgb(104, 104, 104);
         }
-        #buttons {
-            display: flex; 
-            justify-content: space-around;
-            align-content: center;
+        button:last-of-type{
+            border-bottom-right-radius: 15px;
         }
+        #buttons{
+            display: flex;
+        }
+        
 
     </style>
 </head>
