@@ -93,6 +93,18 @@
                 player2.takeCard(deck);
                 player2.takeCard(deck);
             }
+            highestCard(){
+                var high = 0 ;
+                for (let i = 0; i<this.hand.length;i++){
+                    if (this.hand[i]>high){
+                        high = this.hand[i]
+                    }
+                    else if (this.hand[i].face = 'Ace'){
+                        high = 11;
+                    }
+                }
+                return high
+            }
             play(dealer){
                 var playerscore = this.checkCards()
                 var dealerscore = dealer.checkCards()
@@ -110,6 +122,22 @@
                 }
                 else if (playerscore>dealerscore){
                     this.win = 'win';
+                }
+                else if (playerscore == dealerscore){
+                    if (this.hand.length>dealer.hand.length){
+                        this.win = 'lose'
+                    }
+                    else if (this.hand.length == dealer.hand.length){
+                        if (this.highestCard() >dealer.highestCard()){
+                            this.win = 'win'
+                        }
+                        else {
+                            this.win = 'lose'
+                        }
+                    }
+                    else{
+                        this.win = 'win'
+                    }
                 }
                 else {
                     this.win ='lose';
